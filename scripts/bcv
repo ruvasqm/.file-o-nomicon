@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+curl -sk https://www.bcv.org.ve -o /tmp/bcv_data && printf "%.2f VED/USD\n" "$(grep 'centrado"><strong>' /tmp/bcv_data | sed -n '5s/.*<strong>\(.*\)<\/strong.*/\1/p' | tr , .)" || printf "<executor.css.red>CURLE%d" $?

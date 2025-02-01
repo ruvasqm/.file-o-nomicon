@@ -1,0 +1,35 @@
+#! /usr/bin/env sh
+# probably portable enough for 2025?
+# https://unix.stackexchange.com/a/6348
+if [ -f /etc/os-release ]; then
+  # freedesktop.org and systemd
+  . /etc/os-release
+  OS=$NAME
+elif type lsb_release >/dev/null 2>&1; then
+  # linuxbase.org
+  OS=$(lsb_release -si)
+elif [ -f /etc/lsb-release ]; then
+  # For some versions of Debian/Ubuntu without lsb_release command
+  . /etc/lsb-release
+  OS=$DISTRIB_ID
+elif [ -f /etc/debian_version ]; then
+  # Older Debian/Ubuntu/etc.
+  OS=Debian
+else
+  # Fall back to uname, e.g. "Linux <version>", also works for BSD, etc.
+  OS=$(uname -s)
+fi
+if [ "$OS" != "Ubuntu" ]; then
+  echo "Not yet implemented for other oss"
+  exit 128
+fi
+# https://askubuntu.com/a/492343
+# https://unix.stackexchange.com/a/639752
+x=$(comm -23 /dev/fd/3 /dev/fd/4) 3<<-EOF 4<<-EOF
+$(apt-mark showmanual | sort -u)
+EOF
+$(gzip -dc /var/log/installer/initial-status.gz | sed -n 's/^Package: //p' | sort -u)
+EOF
+# https://askubuntu.com/a/990838
+echo "$x" | xargs -d '\n' apt-cache depends >depends.txt
+echo "$x" | xargs -d '\n' apt-cache rdepends >rdepends.txt

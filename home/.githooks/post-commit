@@ -1,0 +1,38 @@
+#!/usr/bin/zsh
+# this is a post-commit global hook, that will accumulate the total
+# number of lines changed (modified, deleted, added) on all repos
+# I want to summarize the total number in a file and know how many
+# lines I've changed since I wrote this hook, the file is
+# ~/.gitlineschanged
+# check if it exists first and create it if it doesn't
+# if it does exist, read the number and add to it
+# then write it back to the file
+#
+
+# get the number of lines changed in this post-commit
+# this is the number of lines changed in the last commit
+git diff --shortstat HEAD^ HEAD | awk '{print $1}' | tr -d ',' > /tmp/gitlineschanged
+
+# check if the file exists
+if [ -f ~/.gitlineschanged ]; then
+    # read the number from the file
+    read -r number < ~/.gitlineschanged
+    # add the number from this commit
+    number=$((number + $(cat /tmp/gitlineschanged)))
+    # write the number back to the file
+    echo $number > ~/.gitlineschanged
+else
+    # if the file doesn't exist, create it and write the number to it
+    echo $(cat /tmp/gitlineschanged) > ~/.gitlineschanged
+fi
+
+# remove the temp file
+rm /tmp/gitlineschanged
+
+# print the number of lines changed
+echo "Total lines changed: $(cat ~/.gitlineschanged)"
+
+# exit successfully
+exit 0
+
+

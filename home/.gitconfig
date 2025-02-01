@@ -1,0 +1,14 @@
+[user]
+	name = Ruben Vasquez
+	email = ruvasqm@gmail.com
+[url "git@gitlab.com:"]
+	insteadOf = https://gitlab.com/
+[url "git@github.com:"]
+	insteadOf = https://github.com/
+[core]
+	excludesFile = ~/.gitignore
+	hooksPath = /home/ruvasqm/.githooks
+#[includeIf "gitdir/i:/home/ruvasqm/dev/work/"]
+#  path = ~/.work
+[init]
+	defaultBranch = main

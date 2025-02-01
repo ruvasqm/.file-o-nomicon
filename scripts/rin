@@ -1,0 +1,37 @@
+#! /usr/bin/env sh
+
+# Set the directory for your notes.
+NOTES_HOME="$HOME/dev/notes"
+
+# Create the notes directory if it doesn't exist.
+mkdir -p "$NOTES_HOME"
+
+# Define the ripgrep prefix command.
+RG_PREFIX="rg --column --line-number --no-heading --color=never --smart-case "
+
+# Store any initial query from the command line, if given.
+INITIAL_QUERY="${*:-}"
+
+# Execute fzf with customized options and bindings
+SELECTED=$(
+  : | fzf --ansi \
+    --disabled \
+    --query "$INITIAL_QUERY" \
+    --bind "start:reload:$RG_PREFIX {q} \"$NOTES_HOME\"" \
+    --bind "change:reload:sleep 0.1; $RG_PREFIX {q} \"$NOTES_HOME\" || true" \
+    --bind "alt-enter:unbind(change,alt-enter)+change-prompt(2. fzf> )+enable-search+clear-query" \
+    --color "hl:-1:underline,hl+:-1:underline:reverse" \
+    --prompt '1. rg> ' \
+    --delimiter : \
+    --preview 'bat --color=always {1} --highlight-line {2}' \
+    --bind "esc:cancel+abort" \
+    --preview-window 'up,60%,border-bottom,+{2}+3/3,~3'
+)
+
+# Extract file path and line number from fzf's output
+if [ -n "$SELECTED" ]; then
+  FILE=$(echo "$SELECTED" | cut -d: -f1)
+  #LINE=$(echo "$SELECTED" | cut -d: -f2)
+  nvim "$FILE"
+fi
+exit 1

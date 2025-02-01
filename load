@@ -1,0 +1,98 @@
+#!/usr/bin/env sh
+red="\033[91m"
+rs="\033[39m"
+
+# abort if no stow is found
+if [ -z "$(command -v stow)" ]; then
+  printf "%sstow%s is required to run this script, please reconsider your life choices\n" "$red" "$rs"
+  exit 1
+fi
+
+# props to mrnoname1000 and gilles: https://unix.stackexchange.com/a/111405
+# ainit STEM
+# Declare an empty associative array named STEM.
+ainit() {
+  eval "__aa__${1}=' '"
+}
+# akeys STEM
+# List the keys in the associatve array named STEM.
+akeys() {
+  eval "echo \"\$__aa__${1}\""
+}
+# aget STEM KEY VAR
+# Set VAR to the value of KEY in the associative array named STEM.
+# If KEY is not present, unset VAR.
+aget() {
+  eval "unset $3
+        case \$__aa__${1} in
+          *\" $2 \"*) $3=\$__aa__${1}__$2;;
+        esac"
+}
+# aset STEM KEY VALUE
+# Set KEY to VALUE in the associative array named STEM.
+aset() {
+  eval "__aa__${1}__${2}=\$3
+        case \$__aa__${1} in
+          *\" $2 \"*) :;;
+          *) __aa__${1}=\"\${__aa__${1}}$2 \";;
+        esac"
+}
+# aunset STEM KEY
+# Remove KEY from the associative array named STEM.
+aunset() {
+  eval "unset __aa__${1}__${2}
+        case \$__aa__${1} in
+          *\" $2 \"*) __aa__${1}=\"\${__aa__${1}%% $2 *} \${__aa__${1}#* $2 }\";;
+        esac"
+}
+
+ainit packages
+aset packages nvim "$HOME/.config/nvim"
+aset packages scripts "$HOME/.local/bin"
+aset packages home "$HOME/"
+
+n=""
+if [ "$1" = "-n" ]; then
+  n=$1
+fi
+IFS=" "
+if [ "$#" -gt 1 ]; then
+  for p in "$@"; do
+    if [ "$p" = "$n" ]; then
+      continue
+    fi
+    path=""
+    aget packages "$p" path
+    if [ -z "$path" ]; then
+      printf "package %s%s%s not found, skipping you dummy!\n" "$red" "$p" "$rs"
+      continue
+    fi
+    stow "$n" -v 5 -t "$path" "$p"
+  done
+else
+  if [ "$#" -eq 1 ]; then
+    if [ "$1" = "-n" ]; then
+      # props to dnmfarrel:
+      # https://blog.dnmfarrell.com/post/how-to-split-a-string-in-posix-shell/
+      for p in $(printf "%s\n" "$(akeys packages)" | sed 's/./&/g'); do
+        path=""
+        aget packages "$p" path
+        stow "$n" -v 5 -t "$path" "$p"
+      done
+    else
+      path=""
+      aget packages "$1" path
+      if [ -z "$path" ]; then
+        printf "package %s%s%s not found, skipping you dummy!\n" "$red" "$1" "$rs"
+      else
+        stow -v 5 -t "$path" "$1"
+      fi
+    fi
+  else
+    for p in $(printf "%s\n" "$(akeys packages)" | sed 's/./&/g'); do
+      path=""
+      aget packages "$p" path
+      stow -v 5 -t "$path" "$p"
+    done
+  fi
+fi

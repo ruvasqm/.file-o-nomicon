@@ -1,0 +1,29 @@
+#! /usr/bin/env sh
+srch=$(find . -maxdepth 1 -type d -printf '%P\n' | grep "^$1\$")
+if [ "$srch" ]; then
+  echo "$0: Directory $1 already exists baka!"
+  exit 1
+fi
+#git clone --bare $1
+# grab the dir name from this output
+git clone --bare "$1" >>git.log 2>&1
+res=$?
+if [ "$res" -ne 0 ]; then
+  echo "Failed to clone $1"
+  exit 1
+fi
+dir=$(grep -Go "[0-9A-Za-z\-]*\.git" <git.log)
+rm git.log
+echo "$dir"
+cd "$dir/" || exit 128
+git worktree add --orphan main
+tmux-sessionizer
+# Cloning into bare repository 'anime.git'...
+#remote: Enumerating objects: 6690, done.
+#remote: Counting objects: 100% (54/54), done.
+# remote: Compressing objects: 100% (32/32), done.
+# remote: Total 6690 (delta 33), reused 22 (delta 22), pack-reused 6636 (from 4)
+# Receiving objects: 100% (6690/6690), 48.15 MiB | 5.78 MiB/s, done.
+# Resolving deltas: 100% (4118/4118), done.
+
+#mkdir $1.git && cd $1.git && git init --bare . && git worktree add --orphan main && cd main
