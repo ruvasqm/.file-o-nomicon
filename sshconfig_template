@@ -1,0 +1,16 @@
+Host github.com
+ Hostname ssh.github.com
+ Port 443
+
+###############################################################################
+#
+#Host <host_alias>
+#  Hostname github.com
+#  User git
+#  IdentityFile ~/.ssh/<id_file>
+#  IdentitiesOnly yes
+# 
+# Usage:
+# 
+# git clone host_alias:<user>/<repo>.git
+###############################################################################
