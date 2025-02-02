@@ -49,6 +49,7 @@ aunset() {
 ainit packages
 aset packages nvim "$HOME/.config/nvim"
 aset packages scripts "$HOME/.local/bin"
+aset packages kitty "$HOME/.config/kitty"
 aset packages home "$HOME/"
 
 n=""
