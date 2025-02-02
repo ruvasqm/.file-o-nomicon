@@ -141,3 +141,6 @@ export PATH="$PATH:/$HOME/.modular/bin"
 # eval "$(fnm completions --shell zsh)"
 eval "$(magic completion --shell zsh)"
 eval "$(fnm env --use-on-cd --shell zsh)"
+
+# bun completions
+[ -s "/home/ruvasqm/.bun/_bun" ] && source "/home/ruvasqm/.bun/_bun"
