@@ -137,10 +137,14 @@ terraform-targets () {
   sed 's/\x1b\[[0-9;]*m//g' | grep -o '# [^( ]* ' | sed " s/^# /-replace '/; s/ $/'/; "
 }
 export MANPAGER='nvim +Man!'
-export PATH="$PATH:/$HOME/.modular/bin"
+# export PATH="$PATH:/$HOME/.modular/bin"
 # eval "$(fnm completions --shell zsh)"
-eval "$(magic completion --shell zsh)"
+# eval "$(magic completion --shell zsh)"
 eval "$(fnm env --use-on-cd --shell zsh)"
 
 # bun completions
 [ -s "/home/ruvasqm/.bun/_bun" ] && source "/home/ruvasqm/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

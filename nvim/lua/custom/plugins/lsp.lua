@@ -33,7 +33,7 @@ return {
           -- 'super-tab' for mappings similar to vscode (tab to accept, arrow keys to navigate)
           -- 'enter' for mappings similar to 'super-tab' but with 'enter' to accept
           -- See the full "keymap" documentation for information on defining your own keymap.
-          keymap = { preset = "default" },
+          keymap = { preset = "super-tab" },
 
           appearance = {
             -- Sets the fallback highlight groups to nvim-cmp's highlight groups
@@ -166,6 +166,23 @@ return {
         taplo = true,
         intelephense = true,
         emmet_ls = true,
+        html = {
+          opts = {
+            settings = {
+              html = {
+                format = {
+                  templating = true,
+                  wrapLineLength = 80,
+                  wrapAttributes = "auto",
+                },
+                hover = {
+                  documentation = true,
+                  references = true,
+                },
+              },
+            },
+          },
+        },
 
         pyright = true,
         mojo = { manual_install = true },
@@ -176,6 +193,7 @@ return {
           filetypes = {
             "astro",
             "css",
+            "html",
             "graphql",
             "javascript",
             "javascriptreact",
@@ -320,6 +338,7 @@ return {
         "ruff",
         "lua_ls",
         "delve",
+        "biome",
         -- "tailwind-language-server",
       }
 

@@ -1,0 +1,23 @@
+#! /usr/bin/env sh
+
+if [ -z "$1" ]; then
+  echo "Please specify project name"
+  exit 1
+fi
+
+git init --bare "$1.git"
+cd "$1.git" || {
+  echo "Failed to cd into created repo"
+  exit 1
+}
+git worktree add main
+cd main || {
+  echo "Failed to cd into created worktree"
+  exit 1
+}
+
+npm create vite@latest . -- --template vanilla -- -y
+npm install tailwindcss @tailwindcss/vite
+npm install htmx.org --save
+
+printf "visit \033[92m https://tailwindcss.com/docs/installation/using-vite \033[39m for next steps\n"
