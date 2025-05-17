@@ -91,7 +91,7 @@ return {
       { "Bilal2453/luvit-meta", lazy = true },
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
-      "WhoIsSethDaniel/mason-tool-installer.nvim",
+      -- "WhoIsSethDaniel/mason-tool-installer.nvim",
 
       { "j-hui/fidget.nvim", opts = {} },
       { "https://git.sr.ht/~whynothugo/lsp_lines.nvim" },
@@ -342,8 +342,8 @@ return {
         -- "tailwind-language-server",
       }
 
-      vim.list_extend(ensure_installed, servers_to_install)
-      require("mason-tool-installer").setup { ensure_installed = ensure_installed }
+      -- vim.list_extend(ensure_installed, servers_to_install)
+      -- require("mason-tool-installer").setup { ensure_installed = ensure_installed }
 
       for name, config in pairs(servers) do
         if config == true then
